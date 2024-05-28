@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="gribskov1_sedimentcores" id="gribskov1_sedimentcores">
+	<SimpleField name="id" type="float"></SimpleField>
+	<SimpleField name="type" type="string"></SimpleField>
+</Schema>
+<Folder><name>gribskov1_sedimentcores</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">11</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.27152907716,55.9861439339366</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">12</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.272313815368,55.9860662183095</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">13</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2718836437806,55.9861379281428</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">14</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2724220606206,55.9858586103518</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">15</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2722574775689,55.9856878231392</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">16</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2715726306586,55.9855069702119</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">17</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2716108725077,55.985575335896</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">18</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2710982141994,55.9855832647601</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">19</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2709551844926,55.9857394747953</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">20</SimpleData>
+		<SimpleData name="type">reed</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2712170620502,55.9858371609254</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">1</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2714372540622,55.9856204769281</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">2</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.27122022825,55.9856659423179</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">3</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.271526187987,55.9857200389497</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">4</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2718401137932,55.9856100310192</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">5</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2719093830022,55.9858346823244</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">6</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2721791616967,55.9858184560373</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">7</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2721871849863,55.9860195685445</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">8</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.271778350333,55.9860052632418</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">9</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2713757579397,55.9859585787002</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#gribskov1_sedimentcores">
+		<SimpleData name="id">10</SimpleData>
+		<SimpleData name="type">water</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>12.2716725422726,55.9858369469635</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>
