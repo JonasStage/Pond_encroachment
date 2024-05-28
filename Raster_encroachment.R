@@ -1,5 +1,7 @@
 library(tidyverse);library(sf);library(raster);library(rgdal);library(terra)
 
+load("Gribskov_encroachment.R")
+
 #### Retrive shapes ####
 read_sf("Data/Shapes/gribskov1_2007.shp") -> grib2007
 read_sf("Data/Shapes/gribskov1_2008.shp") -> grib2008
@@ -18,7 +20,7 @@ current.raster = terra::ext(reeds)
 plot(current.raster)
 
 current.raster = terra::rast(current.raster,
-                             res = 1,
+                             res = .1,
                              crs = crs(reeds), 
                              vals = 1)
 
@@ -31,17 +33,9 @@ current.raster = terra::mask(current.raster,
 plot(current.raster)
 
 waterreeds %>% 
-  dplyr::select(geometry) %>% 
-  st_union() %>% 
-  st_cast("MULTIPOINT") -> water_points        ### Create points for calculating distance. 
+  st_cast("LINESTRING") %>% 
+  st_line_sample(density = 1) -> water_points        ### Create points for calculating distance. 
 
-reeds %>% 
-  dplyr::select(geometry) %>% 
-  st_union() %>% 
-  st_cast("MULTIPOINT") -> reeds_points        ### Create points for calculating distance. 
-
-#point.locs = terra::cellFromXY(current.raster,
-#                               st_coordinates(water_points)[,1:2])
 reeds.locs = terra::cellFromXY(current.raster, 
                                st_coordinates(water_points)[,1:2])
 
@@ -56,11 +50,8 @@ plot(all.dists)
 
 
 st_difference(waterreeds,reeds) %>% 
-  st_buffer(.01) -> buff
+  st_buffer(.1) -> buff
 
 terra::mask(all.dists, 
         vect(buff),
             updatevalue = NA) %>% plot
-
-plot(all.dists)
-plot(buff, add =T)
