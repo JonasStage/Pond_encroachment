@@ -1,3 +1,5 @@
+library(gstat)
+
 #### Reeds ####
 org_cores  %>% 
   filter(type == "reed") %>% 

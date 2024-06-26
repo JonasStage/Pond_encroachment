@@ -103,4 +103,77 @@ fig1.1 +
         legend.key = element_blank(),
         legend.background=element_blank()) +
   guides(color = guide_colourbar(title.position="top", title.hjust = 0.5)) + 
-  scale_color_gradient(low = "darkseagreen2",high = "chocolate4") -> org_C_plot
+  scale_color_gradient(low = "cadetblue",high = "chocolate4", limits = c(0,420)) -> fig3
+
+tiff("Figures/Figure 3.tiff", height = 600, width = 600)
+fig3
+dev.off()
+
+#### Figure 4 ####
+#### Målinger fra damstudie ####
+rm(list = ls());invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), detach, character.only=TRUE, unload=TRUE))
+source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Figures/Figurer Gribskov.R")
+library(patchwork)
+bind_rows(co2_data,
+          ch4_data) %>% 
+              filter(station %in% c(1,2,3,4)) %>% 
+              mutate(date = as.Date(closest_hour)) -> flux_data
+  
+flux_data %>% 
+  group_by(station,date) %>%
+  reframe(across(c(diff_umol:ebul_umol,CO2_umol), list(mean = mean), na.rm=T)) %>%
+  mutate(month = month(date),
+         across(diff_umol_mean:CO2_umol_mean, ~.x*24/1000)) %>% 
+  rename(diff_mmol_m2_d1 = diff_umol_mean,
+         ebul_mmol_m2_d1 = ebul_umol_mean,
+         CO2_mmol_m2_d1 = CO2_umol_mean) -> flux_plot_data
+
+flux_plot_data %>% 
+  ggplot(aes(month, diff_mmol_m2_d1, group = month, fill = "diff")) +
+  geom_boxplot() + 
+  scale_x_continuous(limits = c(.5,12.5),
+                     breaks = seq(1,12,1),
+                     labels = rep("",12)) + 
+  labs(x = "",
+       y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
+       fill = "") + 
+  scale_fill_manual(values = "darkorange", 
+                    labels = "Diffusive methane flux") + 
+  theme(legend.position = "bottom")-> diff_flux_plot
+
+flux_plot_data %>% 
+  ggplot(aes(month, ebul_mmol_m2_d1, group = month, fill = "ebul")) +
+  geom_boxplot() + 
+  scale_x_continuous(limits = c(.5,12.5),
+                     breaks = seq(1,12,1),
+                     labels = rep("",12)) + 
+  labs(x = "",
+       y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
+       fill = "") + 
+  scale_y_continuous(limits = c(0,80), 
+                     breaks = seq(0,80,20)) + 
+  scale_fill_manual(values = "royalblue", 
+                    labels = "Ebullitive methane flux") + 
+  theme(legend.position = "bottom") -> ebul_flux_plot
+
+flux_plot_data %>% 
+  ggplot(aes(month, CO2_mmol_m2_d1, group = month, fill = "co2")) +
+  geom_boxplot() + 
+  scale_x_continuous(limits = c(.5,12.5),
+                     breaks = seq(1,12,1),
+                     labels = c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")) + 
+  labs(x = "",
+       y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
+       fill = "") + 
+  scale_y_continuous(breaks = seq(-40,120,20)) +
+  coord_cartesian(ylim = c(-40,120)) + 
+  scale_fill_manual(values = "darkgreen", 
+                    labels = expression(CO['2']*" flux")) + 
+  theme(legend.position = "bottom") -> co2_flux_plot
+
+ebul_flux_plot / diff_flux_plot / co2_flux_plot / guide_area() + plot_layout(guides = 'collect', 
+                                                                             axis_titles = "collect") -> flux_fig
+
+tiff("Figures/Figure 4.tiff", height = 1000, width = 600)
+flux_fig
+dev.off()
