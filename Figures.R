@@ -45,10 +45,6 @@ fig1.1 +
   geom_point(data = coord_flux_stations, aes(X,Y),size = 4, col = "red") +
   ggsn::scalebar(waterreeds, location = "bottomright", dist = 25, dist_unit = "m",transform=F)-> fig1.2
 
-tiff("Figures/Figure 1.tiff", height = 900, width = 1000)
-fig1.1 + fig1.2
-dev.off()
-
 #### Figure 2 ####
 
 all.dists %>% 
@@ -63,17 +59,18 @@ fig1.1 +
   theme(legend.position = "right") + 
   labs(col = "Distance from 2007\nwater extent (m)\n") + 
   guides(col = guide_colourbar(theme = theme(legend.key.height  = unit(10, "lines")))) + 
-  scale_color_gradient(low = "forestgreen",high = "orange", limits = c(0,20), breaks = seq(0,20,5)) -> fig2.1
+  scale_color_gradient(low = "forestgreen",high = "orange", limits = c(0,20), breaks = seq(0,20,5)) -> orto_dist
 
 dist_df %>% 
   ggplot(aes(dist)) + 
   geom_density() + 
   tema + 
   labs(x = "Distance from 2007 water extent (m)",
-       y = "Density") -> fig2.2
+       y = "Density") -> density_dist
 
-tiff("Figures/Figure 2.tiff", height = 600, width = 600)
-fig2.1 / fig2.2 + plot_layout(heights = c(4,2))
+
+tiff("Figures/Figure 1.tiff", height = 900, width = 1400)
+(fig1.2 + orto_dist) / density_dist + plot_layout(heights = c(4,2))
 dev.off()
 
 #### Figure 3 ####
@@ -103,10 +100,10 @@ fig1.1 +
         legend.key = element_blank(),
         legend.background=element_blank()) +
   guides(color = guide_colourbar(title.position="top", title.hjust = 0.5)) + 
-  scale_color_gradient(low = "cadetblue",high = "chocolate4", limits = c(0,420)) -> fig3
+  scale_color_gradient(low = "cadetblue",high = "chocolate4", limits = c(0,420)) -> org_plot
 
-tiff("Figures/Figure 3.tiff", height = 600, width = 600)
-fig3
+tiff("Figures/Figure 2.tiff", height = 600, width = 600)
+org_plot
 dev.off()
 
 #### Figure 4 ####
@@ -139,7 +136,9 @@ flux_plot_data %>%
        fill = "") + 
   scale_fill_manual(values = "darkorange", 
                     labels = "Diffusive methane flux") + 
-  theme(legend.position = "bottom")-> diff_flux_plot
+  theme(legend.position = "bottom") + 
+  scale_y_continuous(limits = c(-4, 25.2),
+                     breaks = seq(0,25,5))-> diff_flux_plot
 
 flux_plot_data %>% 
   ggplot(aes(month, ebul_mmol_m2_d1, group = month, fill = "ebul")) +
@@ -150,8 +149,8 @@ flux_plot_data %>%
   labs(x = "",
        y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
        fill = "") + 
-  scale_y_continuous(limits = c(0,80), 
-                     breaks = seq(0,80,20)) + 
+  scale_y_continuous(limits = c(0,68), 
+                     breaks = seq(0,60,20)) + 
   scale_fill_manual(values = "royalblue", 
                     labels = "Ebullitive methane flux") + 
   theme(legend.position = "bottom") -> ebul_flux_plot
@@ -165,15 +164,15 @@ flux_plot_data %>%
   labs(x = "",
        y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
        fill = "") + 
-  scale_y_continuous(breaks = seq(-40,120,20)) +
-  coord_cartesian(ylim = c(-40,120)) + 
+  scale_y_continuous(breaks = seq(-40,100,20)) +
+  coord_cartesian(ylim = c(-40,104)) + 
   scale_fill_manual(values = "darkgreen", 
                     labels = expression(CO['2']*" flux")) + 
   theme(legend.position = "bottom") -> co2_flux_plot
 
 ebul_flux_plot / diff_flux_plot / co2_flux_plot / guide_area() + plot_layout(guides = 'collect', 
                                                                              axis_titles = "collect") -> flux_fig
-
-tiff("Figures/Figure 4.tiff", height = 1000, width = 600)
+setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
+tiff("Figures/Figure 3.tiff", height = 1000, width = 600)
 flux_fig
 dev.off()
