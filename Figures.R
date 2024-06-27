@@ -118,6 +118,8 @@ bind_rows(co2_data,
   
 flux_data %>% 
   group_by(station,date) %>%
+  mutate(CO2_umol = case_when(CO2_umol < -800 ~ NA_real_,
+                              T ~ CO2_umol)) %>% 
   reframe(across(c(diff_umol:ebul_umol,CO2_umol), list(mean = mean), na.rm=T)) %>%
   mutate(month = month(date),
          across(diff_umol_mean:CO2_umol_mean, ~.x*24/1000)) %>% 
@@ -157,6 +159,7 @@ flux_plot_data %>%
 
 flux_plot_data %>% 
   ggplot(aes(month, CO2_mmol_m2_d1, group = month, fill = "co2")) +
+  geom_hline(aes(yintercept = 0), linetype = "dotted") +
   geom_boxplot() + 
   scale_x_continuous(limits = c(.5,12.5),
                      breaks = seq(1,12,1),
@@ -165,7 +168,7 @@ flux_plot_data %>%
        y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
        fill = "") + 
   scale_y_continuous(breaks = seq(-40,100,20)) +
-  coord_cartesian(ylim = c(-40,104)) + 
+  coord_cartesian(ylim = c(-20,110)) + 
   scale_fill_manual(values = "darkgreen", 
                     labels = expression(CO['2']*" flux")) + 
   theme(legend.position = "bottom") -> co2_flux_plot
