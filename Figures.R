@@ -189,8 +189,8 @@ daily_temp %>%
   full_join(flux_plot_data) %>%
   filter(CO2_mmol_m2_d1 > -600) %>% 
   pivot_longer(diff_mmol_m2_d1:CO2_mmol_m2_d1) %>% 
-  mutate(name_f = case_when(name == "ebul_mmol_m2_d1" ~ "Diffusive CH4",
-                            name == "diff_mmol_m2_d1" ~ "Ebullitive CH4",
+  mutate(name_f = case_when(name == "ebul_mmol_m2_d1" ~ "Ebullitive CH4",
+                            name == "diff_mmol_m2_d1" ~ "Diffusive CH4",
                             name == "CO2_mmol_m2_d1" ~ "CO2"),
          name_f = factor(name_f, levels = c("Ebullitive CH4","Diffusive CH4","CO2"))) %>% 
   ggplot(aes(wtr_temp, value, col = name_f)) + 
