@@ -176,3 +176,27 @@ setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/P
 tiff("Figures/Figure 3.tiff", height = 1000, width = 600)
 flux_fig
 dev.off()
+
+flux_plot_data %>% 
+  group_by(month) %>%
+  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, mean, na.rm=T)) %>% view
+
+#### Water Temp ####
+
+source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment/water_temp_flux.R")
+
+daily_temp %>% 
+  full_join(flux_plot_data) %>%
+  filter(CO2_mmol_m2_d1 > -600) %>% 
+  pivot_longer(diff_mmol_m2_d1:CO2_mmol_m2_d1) %>% 
+  mutate(name_f = case_when(name == "ebul_mmol_m2_d1" ~ "Diffusive CH4",
+                            name == "diff_mmol_m2_d1" ~ "Ebullitive CH4",
+                            name == "CO2_mmol_m2_d1" ~ "CO2"),
+         name_f = factor(name_f, levels = c("Ebullitive CH4","Diffusive CH4","CO2"))) %>% 
+  ggplot(aes(wtr_temp, value, col = name_f)) + 
+  geom_point() + 
+  facet_wrap(~name_f, scales = "free_y", ncol = 1) + 
+  geom_smooth() + 
+  labs(x = "Daily water temperature",
+       y = bquote("Flux (mmol m"^-2*" d"^-1*" )"),
+       col = "")
