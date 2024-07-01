@@ -200,7 +200,7 @@ daily_temp %>%
   geom_point() + 
   facet_wrap(~name_f, scales = "free_y", ncol = 1) + 
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs")) + 
-  labs(x = "Daily water temperature",
+  labs(x = "Daily water temperature (°C)",
        y = bquote("Flux (mmol m"^-2*" d"^-1*" )"),
        col = "") + 
   tema + 
