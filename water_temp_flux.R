@@ -13,3 +13,9 @@ flux_data %>%
   rename(diff_mmol_m2_d1 = diff_umol_mean,
          ebul_mmol_m2_d1 = ebul_umol_mean,
          CO2_mmol_m2_d1 = CO2_umol_mean) -> flux_plot_data
+
+read_csv("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Environmental variables/hobo.csv") %>% 
+  mutate(date = as.Date(datetime)) %>% 
+  filter(dyb_ob == 0.5) %>% 
+  reframe(wtr_temp = mean(temp, na.rm=T),
+          .by = date) -> daily_temp
