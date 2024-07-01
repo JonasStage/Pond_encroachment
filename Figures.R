@@ -190,16 +190,26 @@ source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/
 
 daily_temp %>% 
   full_join(flux_plot_data) %>%
-  filter(CO2_mmol_m2_d1 > -600) %>% 
+  filter(between(CO2_mmol_m2_d1, -600, 200)) %>% 
   pivot_longer(diff_mmol_m2_d1:CO2_mmol_m2_d1) %>% 
-  mutate(name_f = case_when(name == "ebul_mmol_m2_d1" ~ "Ebullitive CH4",
-                            name == "diff_mmol_m2_d1" ~ "Diffusive CH4",
+  mutate(name_f = case_when(name == "ebul_mmol_m2_d1" ~ "Ebullitive methane",
+                            name == "diff_mmol_m2_d1" ~ "Diffusive methane",
                             name == "CO2_mmol_m2_d1" ~ "CO2"),
-         name_f = factor(name_f, levels = c("Ebullitive CH4","Diffusive CH4","CO2"))) %>% 
+         name_f = factor(name_f, levels = c("Ebullitive methane","Diffusive methane","CO2"))) %>% 
   ggplot(aes(wtr_temp, value, col = name_f)) + 
   geom_point() + 
   facet_wrap(~name_f, scales = "free_y", ncol = 1) + 
-  geom_smooth() + 
+  geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs")) + 
   labs(x = "Daily water temperature",
        y = bquote("Flux (mmol m"^-2*" d"^-1*" )"),
-       col = "")
+       col = "") + 
+  tema + 
+  guides(color=guide_legend(override.aes=list(fill=NA))) +
+  scale_color_manual(values = c("royalblue","darkorange","forestgreen"),
+                     labels = c("Ebullitive methane","Diffusive methane",bquote("CO"[2]))) + 
+  theme(strip.text = element_blank()) -> wtr_temp_flux_plot
+
+setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
+tiff("Figures/Figure 4.tiff", height = 1000, width = 600)
+wtr_temp_flux_plot 
+dev.off()
