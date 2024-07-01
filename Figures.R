@@ -43,7 +43,7 @@ fig1.1 +
   geom_sf(data = reeds, fill = "orange4") + 
   geom_sf(data = cores, col = "black", size = 4) +
   geom_point(data = coord_flux_stations, aes(X,Y),size = 4, col = "red") +
-  ggsn::scalebar(waterreeds, location = "bottomright", dist = 25, dist_unit = "m",transform=F)-> fig1.2
+  ggsn::scalebar(waterreeds, location = "bottomright", dist = 20, dist_unit = "m",transform=F, st.size = 3)-> fig1.2
 
 #### Figure 2 ####
 
@@ -69,8 +69,8 @@ dist_df %>%
        y = "Density") -> density_dist
 
 
-tiff("Figures/Figure 1.tiff", height = 900, width = 1400)
-(fig1.2 + orto_dist) / density_dist + plot_layout(heights = c(4,2))
+tiff("Figures/Figure 1.tiff", height = 500, width = 700)
+(fig1.2 + orto_dist) / density_dist + plot_layout(heights = c(6,2))
 dev.off()
 
 #### Figure 3 ####
@@ -210,6 +210,6 @@ daily_temp %>%
   theme(strip.text = element_blank()) -> wtr_temp_flux_plot
 
 setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
-tiff("Figures/Figure 4.tiff", height = 1000, width = 600)
+tiff("Figures/Figure 4.tiff", height = 600, width = 400)
 wtr_temp_flux_plot 
 dev.off()
