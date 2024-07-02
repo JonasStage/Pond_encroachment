@@ -38,7 +38,7 @@ lm_interpolated %>%
   mutate(method = "LM",type = "Median") -> lm_median
 
 bind_rows(lm_mean,lm_median) %>% 
-  mutate(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, ~.x*365*5271.937/1000),
+  mutate(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, ~.x*365*5271.937/1000),     # 5271.937 size of pond
          diff_CO2e_t_y1 = diff_mmol_m2_d1*16.04*28*10^-6,
          ebul_CO2e_t_y1 = ebul_mmol_m2_d1*16.04*28*10^-6,
          CO2_t_y1 =  CO2_mmol_m2_d1*44.01*10^-6,
@@ -46,11 +46,11 @@ bind_rows(lm_mean,lm_median) %>%
   select(diff_CO2e_t_y1:CO2_t_y1,method,type,unit) -> year_emis_co2_e
 
 year_emis_co2_e %>% 
-  mutate(diff_kg_y1 = diff_CO2e_t_y1/28*1000,
-         ebul_kg_y1 = ebul_CO2e_t_y1/28*1000,
-         CO2_kg_y1 = CO2_t_y1*1000,
-         unit = bquote("kg CH4|CO2 /year")) %>% 
-  select(diff_kg_y1:CO2_kg_y1,method:unit) -> year_emis_kg
+  mutate(diff_kg_C_y1 = diff_CO2e_t_y1/28*1000*(12/16),
+         ebul_kg_C_y1 = ebul_CO2e_t_y1/28*1000*(12/16),
+         CO2_kg_C_y1 = CO2_t_y1*1000*(12/44.01),
+         unit = bquote("kg C /year")) %>% 
+  select(diff_kg_C_y1:CO2_kg_C_y1,method:unit) -> year_emis_kg
 
 ##### By water temperature #####
 library(mgcv)
