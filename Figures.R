@@ -182,7 +182,8 @@ dev.off()
 
 flux_plot_data %>% 
   group_by(month) %>%
-  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, mean, na.rm=T)) %>% view
+  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, mean, na.rm=T)) %>%
+  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, mean, na.rm=T))
 
 #### Water Temp ####
 
