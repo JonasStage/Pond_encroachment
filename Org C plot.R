@@ -1,21 +1,31 @@
 library(gstat)
 
+org_mat_m2 %>% 
+  reframe(across(depth:OC_m2_y, mean),
+          .by = site, type) %>% 
+  distinct() %>% 
+  rename(OC_g_m2_y = OC_m2_y) -> core_data
+
 #### Reeds ####
-org_cores  %>% 
-  filter(type == "reed") %>% 
+core_data  %>% 
+  arrange(site) %>% 
+  filter(type == "Reed") %>% 
   dplyr::select(OC_g_m2_y)-> data
 
-data %>% 
+cores %>%
+  arrange(id) %>% 
+  filter(type == "reed") %>% 
   st_coordinates() %>% 
+  {. ->> pp} %>% 
   cbind(OC = data$OC_g_m2_y) %>% 
   as.data.frame() %>% 
   rename(x = X, y = Y)-> coords
 
 r <- raster(reeds, res = .1) 
 
-raster<- rasterize(data,r)
+raster<- rasterize(pp,r)
   
-  gs <- gstat(formula=OC~1, locations=~y+x, data=coords, maxdist = 50, nmax = 2)
+  gs <- gstat(formula=OC~1, locations=~y+x, data=coords, maxdist = 100, nmax = 3)
   idw <- raster::interpolate(r, gs, debug.level=0)
   
   idw <- mask(idw, slice(reeds,1))
@@ -27,21 +37,29 @@ raster<- rasterize(data,r)
     mutate(type = "reeds") -> reeds_org_C
   
   #### water ####
-  org_cores  %>% 
-    filter(type == "water") %>% 
-    dplyr::select(OC_g_m2_y)-> data
+  core_data  %>%                  # z data
+    arrange(site) %>% 
+    filter(type == "Water") %>% 
+    arrange(site) %>% 
+    dplyr::select(OC_g_m2_y, site)-> data
   
-  data %>% 
+  cores %>%                       # coordinates
+    filter(type == "water") %>% 
+    arrange(id) %>% 
+    mutate(id = id + 10) %>% 
     st_coordinates() %>% 
-    cbind(OC = data$OC_g_m2_y) %>% 
+    {. ->> pp} %>% 
+    cbind(OC = data) %>% 
     as.data.frame() %>% 
     rename(x = X, y = Y)-> coords
   
-  r <- raster(st_difference(waterreeds,reeds), res = .1) 
+  diff_raster <- st_difference(waterreeds,reeds)        
   
-  raster<- rasterize(data,r)
+  r <- raster(diff_raster, res = .1) 
   
-  gs <- gstat(formula=OC~1, locations=~y+x, data=coords, maxdist = 50, nmax = 10)
+  raster<- rasterize(pp,r)
+  
+  gs <- gstat(formula=OC.OC_g_m2_y~1, locations=~y+x, data=coords, maxdist = 100, nmax = 10)
   idw <- raster::interpolate(r, gs, debug.level=0)
   
   idw <- mask(idw, slice(st_difference(waterreeds,reeds),1))
@@ -52,5 +70,12 @@ raster<- rasterize(data,r)
     tibble %>% 
     mutate(type = "water")-> water_org_C
 
+#### plot data ####  
+ggplot() + 
+  geom_tile(data= reeds_org_C, aes(x,y, fill = z)) + 
+  geom_tile(data= water_org_C, aes(x,y, fill = z)) + 
+    scale_fill_viridis_c()
+  
+  
   
   

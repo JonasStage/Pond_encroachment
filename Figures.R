@@ -2,7 +2,7 @@ source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/
 source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/R help script/ggplot_themes.R") ### getting ggplot theme
 setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
 source("Raster_encroachment.R")
-library(tidyverse);library(sf);library(raster);library(rgdal);library(terra);library(terrainr);library(patchwork)
+library(tidyverse);library(sf);library(raster);library(terra);library(terrainr);library(patchwork)
         
 #Function
 LongLatToUTM<-function(x,y,zone){

@@ -1,4 +1,4 @@
-library(tidyverse);library(sf);library(raster);library(rgdal);library(terra)
+library(tidyverse);library(sf);library(raster);library(terra)
 
 source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/R help script/ggplot_themes.R") ### getting ggplot theme
 
