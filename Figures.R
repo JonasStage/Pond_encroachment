@@ -214,3 +214,25 @@ setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/P
 tiff("Figures/Figure 4.tiff", height = 600, width = 400)
 wtr_temp_flux_plot 
 dev.off()
+
+
+#### Dybde raster ####
+read_csv("data/raster_data_B.csv") %>% 
+  drop_na() -> depth_raster
+
+ggplot() + 
+  geom_raster(data = depth_raster, aes(x,y, fill = z)) + 
+  coord_equal() +
+  kortbaggrund + 
+  labs(x = "",
+       y = "",
+       fill = "Depth (m)") + 
+  theme(legend.position = "bottom") + 
+  geom_contour(data = depth_raster, aes(x,y, z=z), breaks = c(0,0.5,1,1.5), col = "grey50") +
+  scale_fill_continuous(high = "navy", low = "deepskyblue", limits = c(0,1.5), breaks = c(0,0.5,1,1.5)) + 
+  theme(legend.key.width = unit(3,"cm"),
+        legend.title.position = "top") -> depth
+
+tiff("Figures/depth.tiff", height = 800, width = 800)
+depth
+dev.off()
