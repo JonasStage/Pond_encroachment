@@ -19,3 +19,25 @@ read_csv("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribsko
   filter(dyb_ob == 0.5) %>% 
   reframe(wtr_temp = mean(temp, na.rm=T),
           .by = date) -> daily_temp
+
+
+#### August 2024 #### 
+
+list.files("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/26_08_2024/Ilt",
+           recursive = T,
+           full.names = T) %>% 
+  tibble(path = .) %>% 
+  filter(str_detect(path, "Cat")) %>% 
+  mutate(data = lapply(path, read_csv, skip = 8),
+         station = c(1,2,3,4)) %>% 
+  unnest(data) %>% 
+  select(station,
+         datetime = 4,
+         wtr_temp = 6) %>% 
+  filter(datetime < ymd_hms("2024-08-26 11:40:00")) %>% 
+  mutate(date = as.Date(datetime)) %>% 
+  reframe(wtr_temp = mean(wtr_temp, na.rm=T),
+          .by = c(date))  -> august_wtr_temp
+
+bind_rows(august_wtr_temp,
+          daily_temp) -> daily_temp

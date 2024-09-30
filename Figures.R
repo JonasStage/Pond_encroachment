@@ -167,8 +167,8 @@ flux_plot_data %>%
   labs(x = "",
        y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
        fill = "") + 
-  scale_y_continuous(breaks = seq(-40,100,20)) +
-  coord_cartesian(ylim = c(-20,110)) + 
+  scale_y_continuous(breaks = seq(-20,180,40)) +
+  coord_cartesian(ylim = c(-20,180)) + 
   scale_fill_manual(values = "darkgreen", 
                     labels = expression(CO['2']*" flux")) + 
   theme(legend.position = "bottom") -> co2_flux_plot
@@ -183,7 +183,13 @@ dev.off()
 flux_plot_data %>% 
   group_by(month) %>%
   reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, mean, na.rm=T)) %>%
-  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, mean, na.rm=T))
+  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, ~mean(.x, na.rm=T)*365/1000*12)) %>% 
+  mutate(unit = "g C m-2 y-1",
+         sum = sum(diff_mmol_m2_d1,ebul_mmol_m2_d1,CO2_mmol_m2_d1))
+
+3.35*16.04*365/1000*(12/16.04)
+11.8*16.04*365/1000*(12/16.04)
+39.6*44.01*365/1000*(12/44.01)
 
 #### Water Temp ####
 
