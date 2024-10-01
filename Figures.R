@@ -2,13 +2,13 @@ source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/
 source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/R help script/ggplot_themes.R") ### getting ggplot theme
 setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
 source("Raster_encroachment.R")
-library(tidyverse);library(sf);library(raster);library(terra);library(terrainr);library(patchwork)
+library(tidyverse);library(sf);library(raster);library(terra);library(terrainr);library(patchwork);library(sp)
         
 #Function
 LongLatToUTM<-function(x,y,zone){
   xy <- data.frame(ID = 1:length(x), X = x, Y = y)
-  coordinates(xy) <- c("X", "Y")
-  proj4string(xy) <- CRS("+proj=longlat +datum=WGS84")  ## for example
+  sp::coordinates(xy) <- c("X", "Y")
+  sp::proj4string(xy) <- sp::CRS("+proj=longlat +datum=WGS84")  ## for example
   res <- spTransform(xy, CRS(paste("+proj=utm +zone=",zone," ellps=WGS84",sep='')))
   return(as.data.frame(res))
 }
@@ -42,8 +42,56 @@ fig1.1 +
   geom_sf(data = waterreeds, fill = "blue") + 
   geom_sf(data = reeds, fill = "orange4") + 
   geom_sf(data = cores, col = "black", size = 4) +
-  geom_point(data = coord_flux_stations, aes(X,Y),size = 4, col = "red") +
-  ggsn::scalebar(waterreeds, location = "bottomright", dist = 20, dist_unit = "m",transform=F, st.size = 3)-> fig1.2
+  geom_point(data = coord_flux_stations, aes(coords.x1 ,coords.x2),size = 4, col = "red") + 
+  ggspatial::annotation_scale(location = 'br', 
+                              pad_x = unit(2, "cm"),
+                              pad_y = unit(1, "cm"),
+                              text_cex = 2) -> fig1.2
+
+st_difference(waterreeds,reeds) -> water
+
+read_csv("data/raster_data_B.csv") %>% 
+  drop_na() %>% 
+  {.->> depth_raster2006} %>% 
+  rasterFromXYZ() %>% 
+  mask(water) %>% 
+  as.data.frame(xy = T) %>% 
+  tibble() %>% 
+  drop_na() -> depth_raster2023
+
+library(ggnewscale)
+fig1.1 + 
+  new_scale_fill() +
+  geom_raster(data = depth_raster2023, aes(x, y, fill = z)) + 
+  coord_equal() +
+  labs(x = "",
+       y = "",
+       fill = "Depth (m)") + 
+  theme(legend.position = "bottom") + 
+  geom_contour(data = depth_raster2023, aes(x,y, z=z), breaks = c(0,0.5,1,1.5), col = "grey50") +
+  scale_fill_continuous(high = "navy", low = "deepskyblue", limits = c(0,1.5), breaks = c(0,0.5,1,1.5)) + 
+  theme(legend.key.width = unit(2,"cm"),
+        legend.title.position = "top")  -> fig1.3
+
+tiff("Figures/Figure 1.tiff", height = 800, width = 600)
+fig1.2 / fig1.3
+dev.off()
+
+tiff("Figures/Depth2006.tiff", height = 600, width = 600)
+ggplot() + 
+  geom_raster(data = depth_raster2006, aes(x, y, fill = z)) + 
+  coord_equal() +
+  labs(x = "",
+       y = "",
+       fill = "Depth (m)") + 
+  kortbaggrund +
+  geom_contour(data = depth_raster2006, aes(x,y, z=z), breaks = c(0,0.5,1,1.5), col = "grey50") +
+  scale_fill_continuous(high = "navy", low = "deepskyblue", limits = c(0,1.5), breaks = c(0,0.5,1,1.5)) + 
+  theme(legend.key.width = unit(2,"cm"),
+        legend.title.position = "top",
+        legend.position = "bottom")
+dev.off()
+
 
 #### Figure 2 ####
 
@@ -102,7 +150,7 @@ fig1.1 +
   guides(color = guide_colourbar(title.position="top", title.hjust = 0.5)) + 
   scale_color_gradient(low = "cadetblue",high = "chocolate4", limits = c(0,420)) -> org_plot
 
-tiff("Figures/Figure 2.tiff", height = 600, width = 600)
+tiff("Figures/Figure 3.tiff", height = 600, width = 600)
 org_plot
 dev.off()
 
@@ -137,7 +185,7 @@ flux_plot_data %>%
        y = bquote("Flux (mmol m"^-2*" d"^-1*")"),
        fill = "") + 
   scale_fill_manual(values = "darkorange", 
-                    labels = "Diffusive methane flux") + 
+                    labels = expression(Diffusive~CH['4'])) + 
   theme(legend.position = "bottom") + 
   scale_y_continuous(limits = c(-4, 25.2),
                      breaks = seq(0,25,5))-> diff_flux_plot
@@ -154,7 +202,7 @@ flux_plot_data %>%
   scale_y_continuous(limits = c(0,68), 
                      breaks = seq(0,60,20)) + 
   scale_fill_manual(values = "royalblue", 
-                    labels = "Ebullitive methane flux") + 
+                    labels = expression(Ebullitive~CH['4'])) + 
   theme(legend.position = "bottom") -> ebul_flux_plot
 
 flux_plot_data %>% 
@@ -170,13 +218,14 @@ flux_plot_data %>%
   scale_y_continuous(breaks = seq(-20,180,40)) +
   coord_cartesian(ylim = c(-20,180)) + 
   scale_fill_manual(values = "darkgreen", 
-                    labels = expression(CO['2']*" flux")) + 
-  theme(legend.position = "bottom") -> co2_flux_plot
+                    labels = expression(CO['2'])) + 
+  theme(legend.position = "bottom")  -> co2_flux_plot
 
 ebul_flux_plot / diff_flux_plot / co2_flux_plot / guide_area() + plot_layout(guides = 'collect', 
-                                                                             axis_titles = "collect") -> flux_fig
+                                                                             axis_titles = "collect") &
+  theme(legend.box = "horizontal")  -> flux_fig
 setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
-tiff("Figures/Figure 3.tiff", height = 1000, width = 600)
+tiff("Figures/Figure 4.tiff", height = 1000, width = 600)
 flux_fig
 dev.off()
 
@@ -199,10 +248,10 @@ daily_temp %>%
   full_join(flux_plot_data) %>%
   filter(between(CO2_mmol_m2_d1, -600, 200)) %>% 
   pivot_longer(diff_mmol_m2_d1:CO2_mmol_m2_d1) %>% 
-  mutate(name_f = case_when(name == "ebul_mmol_m2_d1" ~ "Ebullitive methane",
-                            name == "diff_mmol_m2_d1" ~ "Diffusive methane",
+  mutate(name_f = case_when(name == "ebul_mmol_m2_d1" ~ "Ebullitive CH4",
+                            name == "diff_mmol_m2_d1" ~ "Diffusive CH4",
                             name == "CO2_mmol_m2_d1" ~ "CO2"),
-         name_f = factor(name_f, levels = c("Ebullitive methane","Diffusive methane","CO2"))) %>% 
+         name_f = factor(name_f, levels = c("Ebullitive CH4","Diffusive CH4","CO2"))) %>% 
   ggplot(aes(wtr_temp, value, col = name_f)) + 
   geom_point() + 
   facet_wrap(~name_f, scales = "free_y", ncol = 1) + 
@@ -213,32 +262,10 @@ daily_temp %>%
   tema + 
   guides(color=guide_legend(override.aes=list(fill=NA))) +
   scale_color_manual(values = c("royalblue","darkorange","forestgreen"),
-                     labels = c("Ebullitive methane","Diffusive methane",bquote("CO"[2]))) + 
+                     labels = c(bquote("Ebullitive CH"[4]),bquote("Diffusive CH"[4]),bquote("CO"[2]))) + 
   theme(strip.text = element_blank()) -> wtr_temp_flux_plot
 
 setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
-tiff("Figures/Figure 4.tiff", height = 600, width = 400)
+tiff("Figures/Figure 5.tiff", height = 600, width = 400)
 wtr_temp_flux_plot 
-dev.off()
-
-
-#### Dybde raster ####
-read_csv("data/raster_data_B.csv") %>% 
-  drop_na() -> depth_raster
-
-ggplot() + 
-  geom_raster(data = depth_raster, aes(x,y, fill = z)) + 
-  coord_equal() +
-  kortbaggrund + 
-  labs(x = "",
-       y = "",
-       fill = "Depth (m)") + 
-  theme(legend.position = "bottom") + 
-  geom_contour(data = depth_raster, aes(x,y, z=z), breaks = c(0,0.5,1,1.5), col = "grey50") +
-  scale_fill_continuous(high = "navy", low = "deepskyblue", limits = c(0,1.5), breaks = c(0,0.5,1,1.5)) + 
-  theme(legend.key.width = unit(3,"cm"),
-        legend.title.position = "top") -> depth
-
-tiff("Figures/depth.tiff", height = 800, width = 800)
-depth
 dev.off()
