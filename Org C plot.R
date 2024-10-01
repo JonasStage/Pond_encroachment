@@ -1,4 +1,5 @@
 library(gstat)
+source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Sedimentkerner/sediment_data.R")
 
 org_mat_m2 %>% 
   reframe(across(depth:OC_m2_y, mean),
