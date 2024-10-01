@@ -117,8 +117,8 @@ dist_df %>%
        y = "Density") -> density_dist
 
 
-tiff("Figures/Figure 1.tiff", height = 500, width = 700)
-(fig1.2 + orto_dist) / density_dist + plot_layout(heights = c(6,2))
+tiff("Figures/Figure 2.tiff", height = 500, width = 700)
+orto_dist / density_dist + plot_layout(heights = c(6,2))
 dev.off()
 
 #### Figure 3 ####
@@ -131,14 +131,16 @@ org_mat_m2 %>%
 
 cores %>% 
   full_join(org_material_data) -> org_cores
-
+setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
 source("Org C plot.R")
+setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
+
 fig1.1 + 
   geom_tile(data = reeds_org_C, aes(x,y,col = z)) + 
   geom_tile(data = water_org_C, aes(x,y,col = z)) + 
   geom_sf(data = st_boundary(reeds)) + 
   kortbaggrund + 
-  labs(x = "",y = "", col = bquote("Organic carbon deposition (g OC m"^-2*" y"^-1*")")) +
+  labs(x = "",y = "", col = bquote("Organic carbon deposition (g C m"^-2*" y"^-1*")")) +
   theme(legend.position = c(.58,-.1), 
         legend.direction = "horizontal", 
         legend.key.width= unit(1.5, 'cm'),
