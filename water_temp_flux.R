@@ -7,13 +7,14 @@ bind_rows(co2_data,
 
 flux_data %>% 
   group_by(station,date) %>%
+  mutate(CO2_umol = case_when(CO2_umol < -800 ~ NA_real_,
+                              T ~ CO2_umol)) %>% 
   reframe(across(c(diff_umol:ebul_umol,CO2_umol), list(mean = mean), na.rm=T)) %>%
   mutate(month = month(date),
          across(diff_umol_mean:CO2_umol_mean, ~.x*24/1000)) %>% 
   rename(diff_mmol_m2_d1 = diff_umol_mean,
          ebul_mmol_m2_d1 = ebul_umol_mean,
          CO2_mmol_m2_d1 = CO2_umol_mean) -> flux_plot_data
-
 read_csv("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Environmental variables/hobo.csv") %>% 
   mutate(date = as.Date(datetime)) %>% 
   filter(dyb_ob == 0.5) %>% 
