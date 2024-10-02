@@ -68,7 +68,7 @@ fig1.1 +
        y = "",
        fill = "Depth (m)") + 
   theme(legend.position = "bottom") + 
-  geom_contour(data = depth_raster2023, aes(x,y, z=z), breaks = c(0,0.5,1,1.5), col = "grey50") +
+  geomtextpath::geom_textcontour(data = depth_raster2023, aes(x,y, z=z), remove_long = T, breaks = c(0,0.5,1,1.5), textcolour = "black",linecolour = "grey50") +
   scale_fill_continuous(high = "navy", low = "deepskyblue", limits = c(0,1.5), breaks = c(0,0.5,1,1.5)) + 
   theme(legend.key.width = unit(2,"cm"),
         legend.title.position = "top")  -> fig1.3
@@ -85,7 +85,7 @@ ggplot() +
        y = "",
        fill = "Depth (m)") + 
   kortbaggrund +
-  geom_contour(data = depth_raster2006, aes(x,y, z=z), breaks = c(0,0.5,1,1.5), col = "grey50") +
+  geomtextpath::geom_textcontour(data = depth_raster2006, aes(x,y, z=z), remove_long = T, breaks = c(0,0.5,1,1.5), textcolour = "black",linecolour = "grey50") +
   scale_fill_continuous(high = "navy", low = "deepskyblue", limits = c(0,1.5), breaks = c(0,0.5,1,1.5)) + 
   theme(legend.key.width = unit(2,"cm"),
         legend.title.position = "top",
@@ -265,7 +265,14 @@ daily_temp %>%
   guides(color=guide_legend(override.aes=list(fill=NA))) +
   scale_color_manual(values = c("royalblue","darkorange","forestgreen"),
                      labels = c(bquote("Ebullitive CH"[4]),bquote("Diffusive CH"[4]),bquote("CO"[2]))) + 
-  theme(strip.text = element_blank()) -> wtr_temp_flux_plot
+  theme(strip.text = element_blank()) +
+  ggh4x::facetted_pos_scales(
+    y = list(
+      scale_y_continuous(limits = c(0,50)),
+      scale_y_continuous(limits = c(-4,26)),
+      scale_y_continuous(limits = c(0,120))
+    )
+  ) -> wtr_temp_flux_plot
 
 setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
 tiff("Figures/Figure 5.tiff", height = 600, width = 400)
