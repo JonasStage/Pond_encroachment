@@ -2,7 +2,8 @@ library(tidyverse);library(sf);library(raster);library(terra)
 
 source("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/R help script/ggplot_themes.R") ### getting ggplot theme
 
-load("Raster_encroachment.rda")
+#load("Raster_encroachment.rda")
+setwd("/Users/jonas/Library/CloudStorage/OneDrive-SyddanskUniversitet/Gribskov/Pond_encroachment")
 
 #### Retrive shapes ####
 read_sf("Data/Shapes/gribskov1_2007.shp") -> grib2007
@@ -107,9 +108,9 @@ st_intersection(depth,reeds) %>%
 
 st_as_sf(dist_df, coords = c("x","y"), crs = st_crs(reeds)) -> dist_sf
 
+library(data.table)
 dt2 <- data.table(dplyr::select(dist_df, x:y))
 dt1 <- data.table(dplyr::select(depth_df,x:y))
-library(data.table)
 dt1[, index := apply(raster::pointDistance(as.matrix(dt1), 
                                                  as.matrix(dt2), 
                                                  lonlat = FALSE), 1, 
@@ -148,14 +149,20 @@ dist_df %>%
          y_reed = y.x,
          reed_speed = dist) %>% 
   full_join(dist_reed_point,
-            by = join_by(x_point,y_point,depth_m))-> connecting
+            by = join_by(x_point,y_point,depth_m)) %>% 
+  mutate(slope = depth_m/dist_from_shore,
+         encroachment_rate = reed_speed/(2023-2007)) -> connecting
 
 connecting %>% 
-  mutate(slope = depth_m/dist_from_shore) %>% 
-  ggplot(aes(slope, reed_speed/(2023-2007))) + 
+  ggplot(aes(slope, encroachment_rate)) + 
   geom_point(size = 3) + 
   labs(x = "Slope (m/m)",
-       y = bquote("Incroachment rate (m y"^-1*")")) + 
+       y = bquote("Encroachment rate (m y"^-1*")")) + 
   tema + 
+  geom_smooth(method = "lm", se = F) +
   scale_x_continuous(limits = c(0,0.5), breaks = seq(0,0.5,0.1)) +
   scale_y_continuous(limits = c(0.2,0.8), breaks = seq(0.2,0.8,0.2))
+
+
+connecting %>% 
+  lm(encroachment_rate~slope, data= .) %>% summary
