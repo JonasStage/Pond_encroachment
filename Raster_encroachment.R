@@ -161,8 +161,11 @@ connecting %>%
   tema + 
   geom_smooth(method = "lm", se = F) +
   scale_x_continuous(limits = c(0,0.5), breaks = seq(0,0.5,0.1)) +
-  scale_y_continuous(limits = c(0.2,0.8), breaks = seq(0.2,0.8,0.2))
+  scale_y_continuous(limits = c(0.2,0.8), breaks = seq(0.2,0.8,0.2)) -> plotS3
 
+jpeg("Figures/Figure S3.jpeg")
+plotS3
+dev.off()
 
 connecting %>% 
   lm(encroachment_rate~slope, data= .) %>% summary
