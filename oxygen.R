@@ -16,10 +16,11 @@ oxy %>%
                                 "Water temperature"),
                      values = c("darkorange","royalblue")) + 
   labs(x = "",
-       y = bquote("Dissolve oxygen (mg l"^-1*") and Water temperature (°C)"),
+       y = bquote("Dissolved oxygen (mg l"^-1*") and Water temperature (°C)"),
        col = "") + 
   tema -> oxy_temp_plot
 
-tiff("Figures/Figure S2.tiff", height = 400, width = 1400)
+tiff("Figures/Figure S2.tiff", height = 500, width = 1000)
 oxy_temp_plot 
 dev.off()
+
