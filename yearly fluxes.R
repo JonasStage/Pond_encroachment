@@ -7,7 +7,7 @@ library(tidyverse);library(lubridate);library(zoo);library(patchwork)
 
 flux_plot_data %>% 
   group_by(month) %>% 
-  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, ~ mean(.x, na.rm=T))) %>% 
+  reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, ~ mean(.x, na.rm=T))) %>% summary
   reframe(across(diff_mmol_m2_d1:CO2_mmol_m2_d1, ~ mean(.x, na.rm=T))) %>% 
   mutate(method = "Average") -> avg_mean
 
@@ -53,11 +53,13 @@ year_emis_co2_e %>%
   select(diff_kg_C_y1:CO2_kg_C_y1,method:unit) -> year_emis_kg
 
 year_emis_kg %>% 
-  mutate(diff_g_C_m2_y1 = diff_kg_C_y1/5271.937*1000,
-         ebul_g_C_m2_y1 = ebul_kg_C_y1/5271.937*1000,
+  mutate(diff_g_C_m2_y1 = diff_kg_C_y1/5271.937*1000*28,
+         ebul_g_C_m2_y1 = ebul_kg_C_y1/5271.937*1000*28,
          CO2_g_C_m2_y1 = CO2_kg_C_y1/5271.937*1000,
          unit = bquote("g C /m/year")) %>% 
-  select(diff_g_C_m2_y1:CO2_g_C_m2_y1,method:unit)
+  select(diff_g_C_m2_y1:CO2_g_C_m2_y1,method:unit) %>% 
+  rowwise() %>% 
+  mutate(sum = sum(c(diff_g_C_m2_y1,ebul_g_C_m2_y1,CO2_g_C_m2_y1)))
   
 
 ##### By water temperature #####
