@@ -53,8 +53,8 @@ year_emis_co2_e %>%
   select(diff_kg_C_y1:CO2_kg_C_y1,method:unit) -> year_emis_kg
 
 year_emis_kg %>% 
-  mutate(diff_g_C_m2_y1 = diff_kg_C_y1/5271.937*1000*28,
-         ebul_g_C_m2_y1 = ebul_kg_C_y1/5271.937*1000*28,
+  mutate(diff_g_C_m2_y1 = diff_kg_C_y1/5271.937*1000,
+         ebul_g_C_m2_y1 = ebul_kg_C_y1/5271.937*1000,
          CO2_g_C_m2_y1 = CO2_kg_C_y1/5271.937*1000,
          unit = bquote("g C /m/year")) %>% 
   select(diff_g_C_m2_y1:CO2_g_C_m2_y1,method:unit) %>% 
