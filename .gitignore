@@ -5,3 +5,5 @@
 .DS_Store
 .Rapp.history
 *.R
+*.rda
+*.Rproj
